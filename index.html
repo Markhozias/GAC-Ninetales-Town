@@ -139,22 +139,6 @@
             "Swavii": { 0: { start: 0, end: 23 }, 1: { start: 0, end: 23 }, 2: { start: 0, end: 23 }, 3: { start: 0, end: 23 }, 4: { start: 0, end: 23 }, 5: { start: 0, end: 23 }, 6: { start: 0, end: 23 } },
             "Mystic": { 0: { start: 10, end: 22 }, 1: { start: 18, end: 22 }, 2: { start: 18, end: 22 }, 3: { start: 18, end: 22 }, 4: { start: 18, end: 22 }, 5: { start: 18, end: 22 }, 6: { start: 10, end: 22 } },
             "Spark": { 0: { start: 0, end: 23 }, 1: { start: 0, end: 23 }, 2: { start: 0, end: 23 }, 3: { start: 0, end: 23 }, 4: { start: 0, end: 23 }, 5: { start: 0, end: 23 }, 6: { start: 0, end: 23 } }
-            // Add timezone offsets to each member (in hours)
-        };
-    const timezoneOffsets = {
-        "Luckiee": -3,    // Brazil (BRT)
-        "Espy": 3.5,      // Iran (IRST)
-        "Issac": 1,       // Slovakia (CET)
-        "Rin": -5,        // US (EST)
-        "Glitch": 1,      // Belgium (CET)
-        "Briar": -5,      // US (EST)
-        "Lucky": 1,       // Netherlands (CET)
-        "Coco": -5,       // Quebec (EST)
-        "Zorro": -8,      // US (PST)
-        "Melee": 12,      // New Zealand (NZST)
-        "Star": 9,        // South Korea (KST)
-        "Britt": 0,       // UK (GMT)
-        "Spark": -5       // US (EST)
         };
 
         // Populate dropdowns with names
@@ -234,8 +218,6 @@
     const selectedDay = parseInt(document.getElementById("daySelect").value);
 
     document.getElementById("warningMessage").innerText = "";
-    
-    updateCurrentTimes();
 
     // Validate user exists (case-insensitive)
     const userKey = Object.keys(awakeTimes).find(n => n.toLowerCase() === user);
@@ -318,46 +300,6 @@ function formatTime(hour) {
     const hour12 = hour % 12 || 12; // Converts 0 to 12 AM
     return `${hour12.toString().padStart(2, '0')}:00 ${period}`;
 }
-
-// Add these new functions:
-function updateCurrentTimes() {
-    const table = document.getElementById('currentTimes');
-    const members = [document.getElementById('userName').value, ...selectedGroupMembers];
-    
-    // Clear existing rows
-    table.innerHTML = '<tr><th>Member</th><th>Current Time</th></tr>';
-    
-    members.forEach(member => {
-        if (!member || !awakeTimes[member]) return;
-        
-        const row = document.createElement('tr');
-        const offset = timezoneOffsets[member] || 0;
-        
-        row.innerHTML = `
-            <td>${member}</td>
-            <td>${getCurrentTimeForMember(offset)}</td>
-        `;
-        table.appendChild(row);
-    });
-}
-
-function getCurrentTimeForMember(offset) {
-    const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    const local = new Date(utc + (3600000 * offset));
-    
-    return local.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-    });
-}
-
-// Update time every second
-setInterval(updateCurrentTimes, 1000);
-
-// Initialize clocks on page load
-updateCurrentTimes();
 </script>
 </body>
 </html>
